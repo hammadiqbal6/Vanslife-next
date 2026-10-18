@@ -22,8 +22,6 @@ A travel van rental demo built with the Next.js App Router. Browse vans, filter 
 
 ## Screenshots
 
-<!-- Screenshots are added in docs/screenshots after local verification -->
-
 | Home                               | Vans                               | Host                               |
 | ---------------------------------- | ---------------------------------- | ---------------------------------- |
 | ![Home](docs/screenshots/home.png) | ![Vans](docs/screenshots/vans.png) | ![Host](docs/screenshots/host.png) |

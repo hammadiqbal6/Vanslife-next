@@ -38,6 +38,10 @@ function HostVanDetails({ params }) {
   useEffect(() => {
     if (status === "authenticated") {
       fetchData();
+      return;
+    }
+    if (status === "unauthenticated") {
+      setLoading(false);
     }
   }, [status, fetchData]);
 
@@ -71,8 +75,16 @@ function HostVanDetails({ params }) {
     }
   };
 
-  if (status === "loading" || loading) {
+  if (status === "loading" || (status === "authenticated" && loading)) {
     return <Loader />;
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="wrapper text-center">
+        <p className="text-[#4d4d4d]">Redirecting to sign in…</p>
+      </div>
+    );
   }
 
   return (

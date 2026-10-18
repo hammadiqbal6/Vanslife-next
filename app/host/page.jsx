@@ -37,6 +37,10 @@ function Host() {
   useEffect(() => {
     if (status === "authenticated") {
       fetchData();
+      return;
+    }
+    if (status === "unauthenticated") {
+      setLoading(false);
     }
   }, [status, fetchData]);
 
@@ -57,8 +61,16 @@ function Host() {
     }
   };
 
-  if (status === "loading" || loading) {
+  if (status === "loading" || (status === "authenticated" && loading)) {
     return <Loader />;
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="wrapper text-center">
+        <p className="text-[#4d4d4d]">Redirecting to sign in…</p>
+      </div>
+    );
   }
 
   if (!user) {
@@ -67,6 +79,13 @@ function Host() {
         <p className="text-red-600">
           {error || "Unable to load host dashboard."}
         </p>
+        <button
+          type="button"
+          onClick={fetchData}
+          className="mt-4 rounded-lg bg-amber-550 px-4 py-2 font-semibold text-white"
+        >
+          Retry
+        </button>
       </div>
     );
   }
