@@ -3,11 +3,31 @@ import fs from "fs";
 import path from "path";
 
 const BASE = process.env.BASE_URL || "http://localhost:3000";
+const root = process.cwd();
+
+function ensureDir(dir) {
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const dirs = [
-  "/workspace/docs/screenshots",
+  process.env.SCREENSHOT_DIR,
+  path.join(root, "docs", "screenshots"),
   "/opt/cursor/artifacts/screenshots",
-];
-for (const d of dirs) fs.mkdirSync(d, { recursive: true });
+]
+  .filter(Boolean)
+  .filter((dir, index, all) => all.indexOf(dir) === index)
+  .filter((dir) => ensureDir(dir));
+
+if (!dirs.length) {
+  const fallback = path.join(root, "test-results", "screenshots");
+  ensureDir(fallback);
+  dirs.push(fallback);
+}
 
 async function shot(page, name) {
   for (const d of dirs) {
