@@ -64,7 +64,9 @@ function Host() {
   if (!user) {
     return (
       <div className="wrapper">
-        <p className="text-red-600">{error || "Unable to load host dashboard."}</p>
+        <p className="text-red-600">
+          {error || "Unable to load host dashboard."}
+        </p>
       </div>
     );
   }

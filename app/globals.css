@@ -15,8 +15,16 @@
   body {
     background-color: var(--van-cream);
     background-image:
-      radial-gradient(circle at top left, rgba(255, 140, 56, 0.12), transparent 32%),
-      radial-gradient(circle at top right, rgba(22, 22, 22, 0.05), transparent 28%);
+      radial-gradient(
+        circle at top left,
+        rgba(255, 140, 56, 0.12),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at top right,
+        rgba(22, 22, 22, 0.05),
+        transparent 28%
+      );
     color: var(--van-ink);
     margin: 0;
     padding: 0;

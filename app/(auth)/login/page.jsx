@@ -9,7 +9,9 @@ import * as Yup from "yup";
 import Loader from "@/components/Loader";
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Enter a valid email").required("Email is required"),
+  email: Yup.string()
+    .email("Enter a valid email")
+    .required("Email is required"),
   password: Yup.string()
     .min(5, "Password must be at least 5 characters")
     .required("Password is required"),
@@ -96,7 +98,9 @@ function LoginForm() {
                   onBlur={() => setFieldTouched("email")}
                 />
                 {errors.email && touched.email && (
-                  <div className="mt-1 text-sm text-red-600">{errors.email}</div>
+                  <div className="mt-1 text-sm text-red-600">
+                    {errors.email}
+                  </div>
                 )}
               </div>
               <div>

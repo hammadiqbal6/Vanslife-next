@@ -100,7 +100,9 @@ function HostVanDetails({ params }) {
               <p className="text-lg">
                 <span className="font-bold">${van.price}</span>/day
               </p>
-              <p className="leading-relaxed text-[#4d4d4d]">{van.description}</p>
+              <p className="leading-relaxed text-[#4d4d4d]">
+                {van.description}
+              </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   type="button"

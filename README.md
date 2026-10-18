@@ -24,8 +24,8 @@ A travel van rental demo built with the Next.js App Router. Browse vans, filter 
 
 <!-- Screenshots are added in docs/screenshots after local verification -->
 
-| Home | Vans | Host |
-| --- | --- | --- |
+| Home                               | Vans                               | Host                               |
+| ---------------------------------- | ---------------------------------- | ---------------------------------- |
 | ![Home](docs/screenshots/home.png) | ![Vans](docs/screenshots/vans.png) | ![Host](docs/screenshots/host.png) |
 
 ## Getting started
@@ -48,19 +48,19 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
-| Variable | Description |
-| --- | --- |
+| Variable          | Description                                                   |
+| ----------------- | ------------------------------------------------------------- |
 | `NEXTAUTH_SECRET` | Secret used to sign NextAuth JWTs (`openssl rand -base64 32`) |
-| `NEXTAUTH_URL` | App URL, e.g. `http://localhost:3000` |
+| `NEXTAUTH_URL`    | App URL, e.g. `http://localhost:3000`                         |
 
 See `.env.example` for a template. Never commit real secrets.
 
 ### Demo accounts
 
-| Email | Password | Owned vans |
-| --- | --- | --- |
-| `bob@example.com` | `password123` | Modest Explorer, Beach Bum, Reliable Red |
-| `jane@example.com` | `password123` | Dreamfinder, The Cruiser, Green Wonder |
+| Email              | Password      | Owned vans                               |
+| ------------------ | ------------- | ---------------------------------------- |
+| `bob@example.com`  | `password123` | Modest Explorer, Beach Bum, Reliable Red |
+| `jane@example.com` | `password123` | Dreamfinder, The Cruiser, Green Wonder   |
 
 Or create a new account at `/register`.
 

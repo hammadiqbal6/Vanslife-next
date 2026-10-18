@@ -1,10 +1,5 @@
 import { errorResponse, getAccessToken, json } from "@/lib/api";
-import {
-  deleteVan,
-  findUserByToken,
-  getVanById,
-  updateVan,
-} from "@/lib/store";
+import { deleteVan, findUserByToken, getVanById, updateVan } from "@/lib/store";
 
 export const GET = async (_request, { params }) => {
   try {

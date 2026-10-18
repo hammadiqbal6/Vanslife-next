@@ -7,7 +7,7 @@ export default function Home() {
         className="absolute inset-0 bg-[url('/images/home-hero.png')] bg-cover bg-center"
         aria-hidden
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/25" />
+      <div className="via-black/55 absolute inset-0 bg-gradient-to-r from-black/75 to-black/25" />
       <div className="relative z-10 mx-auto flex min-h-[calc(100vh-57px)] max-w-6xl flex-col justify-center px-4 py-16 md:px-6">
         <p className="animate-fade-up mb-3 font-display text-4xl font-bold uppercase tracking-tight text-white md:text-6xl lg:text-7xl">
           #VanLife
