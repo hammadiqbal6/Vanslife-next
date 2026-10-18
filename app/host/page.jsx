@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import VanView from "@/components/VanView";
@@ -15,13 +15,16 @@ function Host() {
   const [showCreate, setShowCreate] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    if (!session?.user) return;
+  const userId = session?.user?.id;
+  const accessToken = session?.user?.token;
+
+  const fetchData = useCallback(async () => {
+    if (!userId || !accessToken) return;
     try {
       setError("");
       setLoading(true);
-      const result = await apiFetch(`/api/host/${session.user.id}`, {
-        token: session.user.token,
+      const result = await apiFetch(`/api/host/${userId}`, {
+        token: accessToken,
       });
       setUser(result);
     } catch (err) {
@@ -29,13 +32,13 @@ function Host() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, accessToken]);
 
   useEffect(() => {
     if (status === "authenticated") {
       fetchData();
     }
-  }, [status, session?.user?.id, session?.user?.token]);
+  }, [status, fetchData]);
 
   const handleCreate = async (values, { setSubmitting, resetForm }) => {
     try {

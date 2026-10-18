@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -16,14 +16,16 @@ function HostVanDetails({ params }) {
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const accessToken = session?.user?.token;
+  const vanId = params.id;
 
-  const fetchData = async () => {
-    if (!session?.user) return;
+  const fetchData = useCallback(async () => {
+    if (!accessToken) return;
     try {
       setError("");
       setLoading(true);
-      const result = await apiFetch(`/api/host/van/${params.id}`, {
-        token: session.user.token,
+      const result = await apiFetch(`/api/host/van/${vanId}`, {
+        token: accessToken,
       });
       setVan(result);
     } catch (err) {
@@ -31,13 +33,13 @@ function HostVanDetails({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [accessToken, vanId]);
 
   useEffect(() => {
     if (status === "authenticated") {
       fetchData();
     }
-  }, [status, session?.user?.token, params.id]);
+  }, [status, fetchData]);
 
   const handleUpdate = async (values, { setSubmitting }) => {
     try {
