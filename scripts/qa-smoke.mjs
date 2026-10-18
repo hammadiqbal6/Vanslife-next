@@ -3,11 +3,31 @@ import fs from "fs";
 import path from "path";
 
 const BASE = process.env.BASE_URL || "http://localhost:3000";
+const root = process.cwd();
+
+function ensureDir(dir) {
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const dirs = [
-  "/workspace/docs/screenshots",
+  process.env.SCREENSHOT_DIR,
+  path.join(root, "docs", "screenshots"),
   "/opt/cursor/artifacts/screenshots",
-];
-for (const d of dirs) fs.mkdirSync(d, { recursive: true });
+]
+  .filter(Boolean)
+  .filter((dir, index, all) => all.indexOf(dir) === index)
+  .filter((dir) => ensureDir(dir));
+
+if (!dirs.length) {
+  const fallback = path.join(root, "test-results", "screenshots");
+  ensureDir(fallback);
+  dirs.push(fallback);
+}
 
 async function shot(page, name) {
   for (const d of dirs) {
@@ -27,7 +47,27 @@ function log(step, ok, detail = "") {
 }
 
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+const context = await browser.newContext({
+  viewport: { width: 1280, height: 800 },
+});
+const page = await context.newPage();
+
+async function loginAsDemoHost() {
+  const csrfResponse = await context.request.get(`${BASE}/api/auth/csrf`);
+  const { csrfToken } = await csrfResponse.json();
+  await context.request.post(`${BASE}/api/auth/callback/credentials`, {
+    form: {
+      csrfToken,
+      email: "bob@example.com",
+      password: "password123",
+      redirect: "false",
+      json: "true",
+    },
+  });
+  const sessionResponse = await context.request.get(`${BASE}/api/auth/session`);
+  const session = await sessionResponse.json();
+  return Boolean(session?.user);
+}
 
 try {
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
@@ -62,11 +102,9 @@ try {
   await page.goto(BASE + "/host", { waitUntil: "networkidle" });
   log("host redirect when logged out", page.url().includes("/login"));
 
-  await page.goto(BASE + "/login", { waitUntil: "networkidle" });
-  await page.fill("#email", "bob@example.com");
-  await page.fill("#password", "password123");
-  await page.getByRole("button", { name: "Login" }).click();
-  await page.waitForURL(/\/host/, { timeout: 10000 });
+  const loggedIn = await loginAsDemoHost();
+  log("login session", loggedIn);
+  await page.goto(BASE + "/host", { waitUntil: "networkidle" });
   log("login to host", page.url().includes("/host"));
   await page.waitForTimeout(800);
   const hostVans = await page.locator('a[href^="/host/van/"]').count();
@@ -105,7 +143,7 @@ try {
   await page.goto(BASE + "/host", { waitUntil: "networkidle" });
   log("logout protects host", page.url().includes("/login"));
 
-  const mobile = await browser.newPage({
+  const mobile = await context.newPage({
     viewport: { width: 390, height: 844 },
   });
   await mobile.goto(BASE + "/", { waitUntil: "networkidle" });
