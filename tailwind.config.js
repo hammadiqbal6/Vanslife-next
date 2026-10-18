@@ -7,16 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      fontFamily: {
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "ui-serif", "Georgia", "serif"],
       },
       maxHeight: {
         128: "32rem",
       },
       gridTemplateColumns: {
-        fluid: "repeat(auto-fit,minmax(20rem,1fr))",
+        fluid: "repeat(auto-fit,minmax(16rem,1fr))",
       },
       colors: {
         "amber-550": "#ff8c38",
