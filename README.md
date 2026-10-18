@@ -28,6 +28,10 @@ A travel van rental demo built with the Next.js App Router. Browse vans, filter 
 | ---------------------------------- | ---------------------------------- | ---------------------------------- |
 | ![Home](docs/screenshots/home.png) | ![Vans](docs/screenshots/vans.png) | ![Host](docs/screenshots/host.png) |
 
+Mobile home:
+
+![Home mobile](docs/screenshots/home-mobile.png)
+
 ## Getting started
 
 ### Prerequisites
@@ -73,7 +77,10 @@ npm run start         # start production server
 npm run lint          # ESLint
 npm run format        # Prettier write
 npm run format:check  # Prettier check
+npm run qa:smoke      # Playwright smoke (app must be running on :3000)
 ```
+
+> `qa:smoke` expects `npm run dev` (or `npm start`) on `http://localhost:3000`.
 
 ## Project structure
 
