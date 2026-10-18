@@ -1,16 +1,31 @@
 "use client";
+
+import Link from "next/link";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
-function NavigateBack({ message }) {
+function NavigateBack({ message, href }) {
   const router = useRouter();
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="inline-flex cursor-pointer items-center gap-x-2 text-lg text-[#161616] transition hover:text-amber-550"
+      >
+        <MdKeyboardBackspace /> {message}
+      </Link>
+    );
+  }
+
   return (
-    <div
+    <button
+      type="button"
       onClick={() => router.back()}
-      className="flex items-center gap-x-2 text-lg cursor-pointer"
+      className="inline-flex cursor-pointer items-center gap-x-2 text-lg text-[#161616] transition hover:text-amber-550"
     >
       <MdKeyboardBackspace /> {message}
-    </div>
+    </button>
   );
 }
 

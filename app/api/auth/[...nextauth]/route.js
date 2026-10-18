@@ -1,56 +1,62 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { authenticate } from "@/lib/store";
 
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
-      async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        const res = await fetch("http://127.0.0.1:8000/api/login", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        let user = null;
-        // console.log(data?.user);
-        if (data.user) {
-          user = data.user;
-          user.token = data.token;
-        } else {
-          throw Error(data.error);
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
         }
-        // console.log(user);
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          // session.user = user;
-          return user;
+
+        const result = authenticate(credentials.email, credentials.password);
+        if (!result) {
+          throw new Error("Invalid credentials");
         }
-        // Return null if user data could not be retrieved
-        return data;
+
+        return {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+          firstName: result.user.firstName,
+          lastName: result.user.lastName,
+          token: result.token,
+        };
       },
     }),
   ],
   pages: {
     signIn: "/login",
   },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     jwt: async ({ token, user }) => {
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.token = user.token;
+      }
+      return token;
     },
     session: async ({ session, token }) => {
-      session.user = token;
+      session.user = {
+        id: token.id,
+        name: token.name,
+        email: token.email,
+        firstName: token.firstName,
+        lastName: token.lastName,
+        token: token.token,
+      };
       return session;
     },
   },

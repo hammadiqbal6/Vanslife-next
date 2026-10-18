@@ -1,16 +1,25 @@
-import Api from "@/utils";
+import { errorResponse, getAccessToken, json } from "@/lib/api";
+import { findUserByToken, getVanById } from "@/lib/store";
 
 export const GET = async (request, { params }) => {
   try {
-    const token = request.headers.get("accessToken");
-    const response = await Api.get(`/user/van/${params.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log(response);
-    return new Response(JSON.stringify(response.data), { status: 200 });
+    const token = getAccessToken(request);
+    const user = findUserByToken(token);
+    if (!user) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+
+    const van = getVanById(params.id);
+    if (!van) {
+      return json({ error: "Van not found" }, 404);
+    }
+
+    if (String(van.userId) !== String(user.id)) {
+      return json({ error: "Forbidden" }, 403);
+    }
+
+    return json(van);
   } catch (error) {
-    return new Response(error, { status: 500 });
+    return errorResponse(error);
   }
 };

@@ -1,12 +1,22 @@
 "use client";
+
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 
 function GuestNav() {
   return (
     <>
-      <Link href="/login">Login</Link>
-      <Link href="/register">Register</Link>
+      <Link
+        href="/login"
+        className="text-[#4d4d4d] transition hover:text-[#161616]"
+      >
+        Login
+      </Link>
+      <Link
+        href="/register"
+        className="rounded-lg bg-amber-550 px-3 py-1.5 font-semibold text-white transition hover:bg-[#e67a28]"
+      >
+        Register
+      </Link>
     </>
   );
 }

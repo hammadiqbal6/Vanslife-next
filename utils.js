@@ -1,36 +1,27 @@
-import axios from "axios";
+/**
+ * Client-side fetch helpers for the VanLife API routes.
+ */
 
-const baseURL = "http://127.0.0.1:8000/api";
-const Api = axios.create({
-  baseURL: baseURL,
-});
+export async function apiFetch(path, { token, ...options } = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+  if (token) {
+    headers.accessToken = token;
+  }
 
-export default Api;
+  const response = await fetch(path, {
+    ...options,
+    headers,
+  });
 
-// Api.interceptors.request.use(
-//   (config) => {
-//     if (localStorage.getItem("userToken")) {
-//       config.headers["Authorization"] = `Bearer ${localStorage.getItem(
-//         "userToken"
-//       )}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// Api.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     const { response } = error;
-//     if (response.status === 401) {
-//       localStorage.removeItem("user");
-//       localStorage.removeItem("userToken");
-//     }
-//     throw error;
-//   }
-// );
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error || "Request failed");
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+  return data;
+}

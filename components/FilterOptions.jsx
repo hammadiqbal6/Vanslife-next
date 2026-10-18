@@ -1,46 +1,46 @@
 "use client";
+
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
 
 function FilterOptions({ styles, filterOptions, filterName, searchParams }) {
   const router = useRouter();
   const pathname = usePathname();
-
-  const typeFilter = searchParams[filterName];
+  const typeFilter = searchParams?.[filterName];
 
   const handleFilterChange = (key, value) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(
+      searchParams ? { ...searchParams } : undefined
+    );
     if (value === null) {
       params.delete(key);
     } else {
       params.set(key, value);
     }
-    router.push(`${pathname}?${params.toString()}`);
-    // router.refresh();
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
-  const filterButtonElements = filterOptions.map((type, index) => {
-    return (
-      <button
-        key={index}
-        onClick={() => handleFilterChange("type", type)}
-        className={
-          (typeFilter === type ? "!bg-green-800 " : "") +
-          "rounded-xl bg-amber-200 p-3 md:px-6 md:py-3"
-        }
-      >
-        {type}
-      </button>
-    );
-  });
-
   return (
-    <div className={"sticky top-0 " + styles}>
-      {filterButtonElements}
+    <div className={styles}>
+      {filterOptions.map((type) => (
+        <button
+          key={type}
+          type="button"
+          onClick={() => handleFilterChange(filterName, type)}
+          className={`${
+            typeFilter === type
+              ? "bg-[#161616] text-white"
+              : "bg-[#ffead0] text-[#4d4d4d] hover:bg-[#ffe0b8]"
+          } rounded-xl px-4 py-2.5 capitalize transition md:px-5`}
+        >
+          {type}
+        </button>
+      ))}
       {typeFilter && (
         <button
-          onClick={() => handleFilterChange("type", null)}
-          className="underline"
+          type="button"
+          onClick={() => handleFilterChange(filterName, null)}
+          className="underline underline-offset-4"
         >
           Clear filters
         </button>
